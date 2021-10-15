@@ -38,13 +38,13 @@ app = App()
 @app.route("/")
 def index():
     response = Response()
-    response.status = 404
+    response.status = 200
     response.text = "inedx !"
     return response
 
 @app.route("/contact")
 def contact():
     response = Response()
-    response.status = 404
+    response.status = 200
     response.text = "contact us !"
     return response
