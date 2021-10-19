@@ -41,10 +41,20 @@ class App():
 
     def error_method_not_allowed(self, method):
         return AppResponse(f"method {method} not allowed!" , status=405)
+    
+    def check_is_exists_rule_or_handler(self, path, endpoint):
+        if endpoint in self.mapper:
+            return True
+        for rule in self.map.iter_rules():
+            if path == rule.rule :
+                return True
+        return False
+
 
     def route(self , path , methods=None):
         def wrapper(handler):
             endpoint = handler.__name__
+            assert not self.check_is_exists_rule_or_handler(path , endpoint), f"path {path} already exists"
             rule = Rule(path , endpoint=endpoint , methods=methods)
             self.map.add(rule)
             self.mapper[handler.__name__] = handler
