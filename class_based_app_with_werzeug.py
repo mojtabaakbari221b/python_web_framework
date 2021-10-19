@@ -1,7 +1,7 @@
 from werkzeug.wrappers import Response , Request
 from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException
-
+import inspect
 
 class AppResponse(Response):
     pass
@@ -24,6 +24,10 @@ class App():
         try:
             endpoint , kwargs = adapter.match()
             handler = self.mapper[endpoint]
+            if inspect.isclass(handler):
+                instance = handler()
+                handler = getattr(instance, request.method.lower(), None)
+                assert handler is not None, "mehod mot allowed ."
             return handler(request , **kwargs)
         except NotFound:
             return self.error_not_found()
@@ -52,6 +56,14 @@ def index(request):
 @app.route("/contact")
 def contact(request):
     return AppResponse("contact us !" , status=200)
+
+@app.route("/detail")
+class DetailView():
+    def get(self , request):
+        return AppResponse(f"detail in {request.method} method !" , status=200)
+    
+    def post(self , request):
+        return AppResponse(f"detail in {request.method} method !" , status=200)
 
 @app.route("/katibe/<string:slug>")
 def katibe(request , slug):
