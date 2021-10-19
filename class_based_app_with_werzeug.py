@@ -1,6 +1,6 @@
 from werkzeug.wrappers import Response , Request
 from werkzeug.routing import Rule , Map
-from werkzeug.exceptions import NotFound, HTTPException
+from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
 
 class AppResponse(Response):
@@ -27,20 +27,25 @@ class App():
             if inspect.isclass(handler):
                 instance = handler()
                 handler = getattr(instance, request.method.lower(), None)
-                assert handler is not None, "mehod mot allowed ."
+                assert handler is not None, "method not exists ."
             return handler(request , **kwargs)
         except NotFound:
             return self.error_not_found()
+        except MethodNotAllowed:
+            return self.error_method_not_allowed(request.method)
         except HTTPException:
             return HTTPException(request)
     
     def error_not_found(self):
         return AppResponse("Page Not Found !" , status=404)
 
-    def route(self , path):
+    def error_method_not_allowed(self, method):
+        return AppResponse(f"method {method} not allowed!" , status=405)
+
+    def route(self , path , methods=None):
         def wrapper(handler):
             endpoint = handler.__name__
-            rule = Rule(path , endpoint=endpoint)
+            rule = Rule(path , endpoint=endpoint , methods=methods)
             self.map.add(rule)
             self.mapper[handler.__name__] = handler
             return handler
@@ -49,7 +54,7 @@ class App():
 
 app = App()
 
-@app.route("/")
+@app.route("/" , methods=["GET"])
 def index(request):
     return AppResponse("index !" , status=200)
 
@@ -57,7 +62,7 @@ def index(request):
 def contact(request):
     return AppResponse("contact us !" , status=200)
 
-@app.route("/detail")
+@app.route("/detail" , methods=["POST" , "GET", "PUT"])
 class DetailView():
     def get(self , request):
         return AppResponse(f"detail in {request.method} method !" , status=200)
