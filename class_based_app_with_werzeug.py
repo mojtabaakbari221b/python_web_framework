@@ -2,6 +2,7 @@ from werkzeug.wrappers import Response , Request
 from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
+from middleware import BaseMiddleware
 
 class AppResponse(Response):
     pass
@@ -10,14 +11,18 @@ class App():
     def __init__(self):
         self.mapper = {}
         self.map = Map()
+        self.middleware = BaseMiddleware(self)
     
-    def __call__(self, environ , start_response):
-        return self.handle_request(environ, start_response)
+    def __call__(self, environ, start_response):
+        return self.middleware(environ, start_response)
+
+    # def __call__(self, environ , start_response):
+    #     return self.handle_request(environ, start_response)
     
-    def handle_request(self, environ,start_response):
-        request = Request(environ)
-        response = self.request_dispatcher(request)
-        return response(environ, start_response)
+    # def handle_request(self, environ,start_response):
+    #     request = Request(environ)
+    #     response = self.request_dispatcher(request)
+    #     return response(environ, start_response)
 
     def request_dispatcher(self, request):
         adapter = self.map.bind_to_environ(request.environ)
@@ -60,26 +65,7 @@ class App():
             self.mapper[handler.__name__] = handler
             return handler
         return wrapper
-
-
-app = App()
-
-@app.route("/" , methods=["GET"])
-def index(request):
-    return AppResponse("index !" , status=200)
-
-@app.route("/contact")
-def contact(request):
-    return AppResponse("contact us !" , status=200)
-
-@app.route("/detail" , methods=["POST" , "GET", "PUT"])
-class DetailView():
-    def get(self , request):
-        return AppResponse(f"detail in {request.method} method !" , status=200)
     
-    def post(self , request):
-        return AppResponse(f"detail in {request.method} method !" , status=200)
 
-@app.route("/katibe/<string:slug>")
-def katibe(request , slug):
-    return AppResponse(f"katibe {slug}!" , status=200)
+    def add_middleware(self, middleware_cls):
+        self.middleware.add(middleware_cls)
