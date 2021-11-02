@@ -3,7 +3,7 @@ from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
 from middleware import BaseMiddleware
-from templates import AppResponse
+from templates import TextResponse
 
 class App():
     def __init__(self):
@@ -40,10 +40,10 @@ class App():
             return HTTPException(request)
     
     def error_not_found(self):
-        return AppResponse("Page Not Found !" , status=404)
+        return TextResponse("Page Not Found !" , status=404)
 
     def error_method_not_allowed(self, method):
-        return AppResponse(f"method {method} not allowed!" , status=405)
+        return TextResponse(f"method {method} not allowed!" , status=405)
     
     def check_is_exists_rule_or_handler(self, path, endpoint):
         if endpoint in self.mapper:

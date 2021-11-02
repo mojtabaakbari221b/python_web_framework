@@ -1,5 +1,5 @@
 from webob import Response , Request
-from templates import AppResponse
+from templates import TextResponse
 
 class App():
     def __init__(self):
@@ -20,7 +20,7 @@ class App():
         return response
 
     def default_response(self):
-        return AppResponse("Page Not Found !" , status=404)
+        return TextResponse("Page Not Found !" , status=404)
 
     def route(self , path):
         def wrapper(handler):
@@ -33,8 +33,8 @@ app = App()
 
 @app.route("/")
 def index():
-    return AppResponse("index !" , status=200)
+    return TextResponse("index !" , status=200)
 
 @app.route("/contact")
 def contact():
-    return AppResponse("contact us !" , status=200)
+    return TextResponse("contact us !" , status=200)
