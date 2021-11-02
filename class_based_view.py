@@ -1,5 +1,6 @@
-from class_based_app_with_werzeug import AppResponse , App
+from class_based_app_with_werzeug import App
 from middleware import BaseMiddleware
+from templates import AppResponse
 
 app = App()
 

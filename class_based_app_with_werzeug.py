@@ -3,9 +3,7 @@ from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
 from middleware import BaseMiddleware
-
-class AppResponse(Response):
-    pass
+from templates import AppResponse
 
 class App():
     def __init__(self):

@@ -1,7 +1,5 @@
 from webob import Response , Request
-
-class AppResponse(Response):
-    pass
+from templates import AppResponse
 
 class App():
     def __init__(self):

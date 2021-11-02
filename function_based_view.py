@@ -1,11 +1,16 @@
-from class_based_app_with_werzeug import AppResponse , App
+from jinja2.environment import Template
+from class_based_app_with_werzeug import App
 from middleware import BaseMiddleware
+# from core.templates import HttpResponse
+from templates import HttpResponse , AppResponse
+
 
 app = App()
 
 @app.route("/" , methods=["GET"])
 def index(request):
-    return AppResponse("index !" , status=200)
+    template = HttpResponse(path="index.html" , context={'name': 'mojtaba'})
+    return AppResponse(template() , status=200)
 
 @app.route("/contact")
 def contact(request):
