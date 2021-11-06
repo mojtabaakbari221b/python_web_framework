@@ -35,3 +35,4 @@ class SecondMiddleware(BaseMiddleware):
 
 app.middleware.add(SecondMiddleware)
 app.add_middleware(FirstMiddleware)
+app.serve_static(static_path="paper/static")

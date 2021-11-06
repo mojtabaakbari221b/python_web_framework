@@ -4,9 +4,15 @@ from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
 from middleware import BaseMiddleware
 from templates import TextResponse
+from werkzeug.middleware.shared_data import SharedDataMiddleware
+import os
+from pathlib import Path
 
 class App():
     def __init__(self):
+        self.CONFIG = {
+            "BASE_DIR" : Path(__file__).resolve(),
+        }
         self.mapper = {}
         self.map = Map()
         self.middleware = BaseMiddleware(self)
@@ -67,3 +73,15 @@ class App():
 
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
+
+    def serve_static(self, static_url="/static" , static_path=None):
+        if static_path is None:
+            static_path = os.path.join(os.path.dirname(self.CONFIG["BASE_DIR"]), 'core/static')
+        else :
+            static_path = os.path.join(os.path.dirname(self.CONFIG["BASE_DIR"]), static_path)
+        
+
+        self.middleware = SharedDataMiddleware(self.middleware, {
+                            static_url: static_path
+                        })
+        
