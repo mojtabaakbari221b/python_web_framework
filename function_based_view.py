@@ -31,7 +31,13 @@ class SecondMiddleware(BaseMiddleware):
     def process_response(self, req, res):
         print(f"{__class__.__name__} Processing response", req.url)
 
+# app.serve_static(static_path="static/css")
+
 app.middleware.add(SecondMiddleware)
-# app.add_middleware(ServeStaticMiddleware)
+app.middleware.add(SecondMiddleware)
 app.add_middleware(FirstMiddleware)
-app.serve_static(static_path="static/css")
+
+app.middleware.add(SecondMiddleware)
+app.middleware.add(ServeStaticMiddleware)
+
+# app.serve_static(static_path="static/css")

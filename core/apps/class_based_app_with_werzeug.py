@@ -1,4 +1,3 @@
-from werkzeug.wrappers import Response , Request
 from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
@@ -6,27 +5,16 @@ from ..middlewares.middleware import BaseMiddleware
 from ..templates.templates import TextResponse
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 import os
-from pathlib import Path
+from .. import settings
 
 class App():
     def __init__(self):
-        self.CONFIG = {
-            "BASE_DIR" : Path(__file__).resolve().parent.parent,
-        }
         self.mapper = {}
         self.map = Map()
         self.middleware = BaseMiddleware(self)
     
     def __call__(self, environ, start_response):
         return self.middleware(environ, start_response)
-
-    # def __call__(self, environ , start_response):
-    #     return self.handle_request(environ, start_response)
-    
-    # def handle_request(self, environ,start_response):
-    #     request = Request(environ)
-    #     response = self.request_dispatcher(request)
-    #     return response(environ, start_response)
 
     def request_dispatcher(self, request):
         adapter = self.map.bind_to_environ(request.environ)
@@ -74,14 +62,11 @@ class App():
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
 
-    def serve_static(self, static_url="/static" , static_path=None):
-        if static_path is None:
-            static_path = os.path.join(os.path.dirname(self.CONFIG["BASE_DIR"]), 'core/static')
+    def serve_static(self):
+        if settings.STATIC_PATH is not None or len(settings.STATIC_PATH.strip()) != 0:
+            self.middleware = SharedDataMiddleware(self.middleware, {
+                    settings.STATIC_URL: os.path.join(os.path.dirname(settings.BASE_DIR), settings.STATIC_PATH),
+                })
         else :
-            static_path = os.path.join(os.path.dirname(self.CONFIG["BASE_DIR"]), static_path)
-        
-
-        self.middleware = SharedDataMiddleware(self.middleware, {
-                            static_url: static_path
-                        })
+            raise ValueError("you should set valid value for STATIC_PATH in setting.py")
         
