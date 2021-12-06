@@ -1,4 +1,4 @@
-from webob import Response , Request
+from webob import Request
 from ..templates.templates import TextResponse
 
 class App():

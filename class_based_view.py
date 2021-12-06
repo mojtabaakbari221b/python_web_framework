@@ -1,5 +1,4 @@
 from core.apps.class_based_app_with_werzeug import App
-from core.middlewares.middleware import BaseMiddleware
 from core.templates.templates import TextResponse
 
 app = App()

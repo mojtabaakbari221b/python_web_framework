@@ -68,5 +68,5 @@ class App():
                     settings.STATIC_URL: os.path.join(os.path.dirname(settings.BASE_DIR), settings.STATIC_PATH),
                 })
         else :
-            raise ValueError("you should set valid value for STATIC_PATH in setting.py")
+            raise ValueError("you should set valid value for STATIC_PATH in settings.py")
         

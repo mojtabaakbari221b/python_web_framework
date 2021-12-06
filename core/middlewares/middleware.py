@@ -56,3 +56,17 @@ class BaseMiddleware():
                 raise ValueError("you should set valid value for STATIC_PATH in setting.py")
         else :
             self.app = middleware_cls(self.app)
+
+class FirstMiddleware(BaseMiddleware):
+    def process_request(self, req):
+        print(f"{__class__.__name__} Processing request", req.url)
+
+    def process_response(self, req, res):
+        print(f"{__class__.__name__} Processing response", req.url)
+
+class SecondMiddleware(BaseMiddleware):
+    def process_request(self, req):
+        print(f"{__class__.__name__} Processing request", req.url)
+
+    def process_response(self, req, res):
+        print(f"{__class__.__name__} Processing response", req.url)
