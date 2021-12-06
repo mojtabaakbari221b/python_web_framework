@@ -2,8 +2,8 @@ from werkzeug.wrappers import Response , Request
 from werkzeug.routing import Rule , Map
 from werkzeug.exceptions import NotFound, HTTPException, MethodNotAllowed
 import inspect
-from middleware import BaseMiddleware
-from templates import TextResponse
+from ..middlewares.middleware import BaseMiddleware
+from ..templates.templates import TextResponse
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 import os
 from pathlib import Path
@@ -11,7 +11,7 @@ from pathlib import Path
 class App():
     def __init__(self):
         self.CONFIG = {
-            "BASE_DIR" : Path(__file__).resolve(),
+            "BASE_DIR" : Path(__file__).resolve().parent.parent,
         }
         self.mapper = {}
         self.map = Map()

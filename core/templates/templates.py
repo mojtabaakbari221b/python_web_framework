@@ -1,6 +1,6 @@
 import os
 from werkzeug.wrappers import Response
-from jinja2 import Environment,FileSystemLoader, PackageLoader, select_autoescape
+from jinja2 import Environment,FileSystemLoader, select_autoescape
 
 class TextResponse(Response):
     pass

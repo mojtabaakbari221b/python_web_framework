@@ -1,15 +1,13 @@
-from jinja2.environment import Template
-from class_based_app_with_werzeug import App
-from middleware import BaseMiddleware
-# from core.templates import HttpResponse
-from templates import HttpResponse , TextResponse
+from core.apps.class_based_app_with_werzeug import App
+from core.middlewares.middleware import BaseMiddleware, ServeStaticMiddleware
+from core.templates.templates import HttpResponse , TextResponse
 
 
 app = App()
 
 @app.route("/" , methods=["GET"])
 def index(request):
-    return HttpResponse(template_name="index.html",templates_dir="paper/templates" , context={'name': 'mojtaba'} , status=200)
+    return HttpResponse(template_name="index.html",templates_dir="static/templates" , context={'name': 'mojtaba'} , status=200)
 
 @app.route("/contact")
 def contact(request):
@@ -34,5 +32,6 @@ class SecondMiddleware(BaseMiddleware):
         print(f"{__class__.__name__} Processing response", req.url)
 
 app.middleware.add(SecondMiddleware)
+# app.add_middleware(ServeStaticMiddleware)
 app.add_middleware(FirstMiddleware)
-app.serve_static(static_path="paper/static")
+app.serve_static(static_path="static/css")

@@ -1,5 +1,5 @@
 from webob import Response , Request
-from templates import TextResponse
+from ..templates.templates import TextResponse
 
 class App():
     def __init__(self):
