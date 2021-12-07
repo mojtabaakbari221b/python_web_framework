@@ -6,6 +6,7 @@ from ..templates.templates import TextResponse
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 import os
 from .. import settings
+from werkzeug.serving import run_simple
 
 class App():
     def __init__(self):
@@ -69,4 +70,17 @@ class App():
                 })
         else :
             raise ValueError("you should set valid value for STATIC_PATH in settings.py")
+    
+    def run(self , host=None ,port=None , app=None , use_debugger=None, use_reloader=None):
+        if app is None :
+            raise ValueError("you should set app for running .")
+        if use_debugger is None :
+            use_debugger = settings.USE_DEBUGGER
+        if use_reloader is None :
+            use_reloader = settings.USE_RELOADER
+        if port is None :
+            port = settings.PORT
+        if host is None :
+            host = settings.HOST            
         
+        run_simple(host, port, app, use_debugger=use_debugger, use_reloader=use_reloader)

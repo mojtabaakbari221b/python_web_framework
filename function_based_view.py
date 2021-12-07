@@ -21,4 +21,4 @@ def katibe(request , slug):
 app.middleware.add(FirstMiddleware)
 app.middleware.add(ServeStaticMiddleware)
 app.middleware.add(SecondMiddleware)
-# app.serve_static()
+app.run(app=app)
